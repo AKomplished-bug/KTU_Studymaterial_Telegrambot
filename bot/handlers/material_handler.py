@@ -1,26 +1,80 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
-from bot.states.user_states import UserState
-from bot.keyboards.material_keyboard import material_keyboard
-from bot.utils.file_storage import get_file_from_storage
+# Path to your service account key file
+SERVICE_ACCOUNT_FILE = 'splendid-myth-419715-0316d98d2723.json'
+
+# Define the scopes
+SCOPES = ['https://www.googleapis.com/auth/drive']
+
+# Authenticate using the service account
+creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+
+# Build the Drive service
+drive_service = build('drive', 'v3', credentials=creds)
+
+# Folder IDs for Notes and PYQs for each subject in each semester
+folder_ids = {
+    'Computer Science': {
+        '6th': {
+            'Compiler Design': {
+                'Notes': '1qGVdSxP5cJxyMjH9iEcIxJCplMlKo2yZ',
+                'Previous Year Questions': '1lrSRHEUBo_tD6XWSP-sD67VDDHGl-Mux',
+            },
+            'CGIP': {
+                'Notes': 'YOUR_CGIP_NOTES_FOLDER_ID',
+                'Previous Year Questions': 'YOUR_CGIP_PYQ_FOLDER_ID',
+            },
+            'AAD': {
+                'Notes': 'YOUR_AAD_NOTES_FOLDER_ID',
+                'Previous Year Questions': 'YOUR_AAD_PYQ_FOLDER_ID',
+            },
+            'DCC': {
+                'Notes': 'YOUR_DCC_NOTES_FOLDER_ID',
+                'Previous Year Questions': 'YOUR_DCC_PYQ_FOLDER_ID',
+            },
+            'IEFT': {
+                'Notes': 'YOUR_IEFT_NOTES_FOLDER_ID',
+                'Previous Year Questions': 'YOUR_IEFT_PYQ_FOLDER_ID',
+            },
+        },
+        # Add other semesters and subjects here
+    },
+    # Add other departments here
+}
+
+# Function to list files in a folder
+def list_files_in_folder(folder_id):
+    query = f"'{folder_id}' in parents"
+    results = drive_service.files().list(q=query).execute()
+    return results.get('files', [])
 
 async def material_handler(message: types.Message, state: FSMContext):
-    """Handler for selecting the material type"""
     material_type = message.text
-    # Store the selected material type in the state
     await state.update_data(material_type=material_type)
 
-    # Retrieve the user's selections from the state
     user_data = await state.get_data()
-    department = user_data['department']
-    semester = user_data['semester']
-    subject = user_data['subject']
-    material_type = user_data['material_type']
+    department = user_data.get('department')
+    semester = user_data.get('semester')
+    subject = user_data.get('subject')
+    material_type = user_data.get('material_type')
 
-    # Retrieve the file from the storage service
-    file_path = get_file_from_storage(department, semester, subject, material_type)
+    folder_id = folder_ids.get(department, {}).get(semester, {}).get(subject, {}).get(material_type)
+    if not folder_id:
+        await message.reply("Sorry, the requested material type is not available.")
+        return
 
-    # Send the file to the user
-    with open(file_path, 'rb') as file:
-        await message.reply_document(document=file)
+    files = list_files_in_folder(folder_id)
+    if not files:
+        await message.reply("No files found for the selected material type.")
+        return
+
+    for file in files:
+        file_id = file['id']
+        file_name = file['name']
+        file_url = f"https://drive.google.com/uc?export=download&id={file_id}"
+        await message.reply(f"{file_name}\n[Download]({file_url})", parse_mode='Markdown')
+
+    print(f"Material type selected: {material_type} for subject: {subject}, semester: {semester}, department: {department}")
