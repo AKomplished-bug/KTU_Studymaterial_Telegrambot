@@ -1,22 +1,13 @@
-from aiogram.types import reply_keyboard_markup, keyboard_button
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-
-def subject_keyboard(department, semester):
-    
-    subject=load_subject(department, semester)
-    subject_keyboard = reply_keyboard_markup(resize_keyboard=True)
-    
-    for subject in subject:
-        subject_keyboard.add(keyboard_button(subject))
-        
-        
+def get_subject_keyboard(department, semester):
+    subjects = load_subjects(department, semester)
+    subject_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    for subject in subjects:
+        subject_keyboard.add(KeyboardButton(subject))
     return subject_keyboard
 
-
-def load_subject(department, semester):
-    """
-    This function loads the list of subjects for the given department and semester.
-    """
+def load_subjects(department, semester):
     subjects_dict = {
         'Computer Science': {
             '1st': ['Subject 1', 'Subject 2', 'Subject 3'],
@@ -30,19 +21,4 @@ def load_subject(department, semester):
         },
     }
 
-    if department in subjects_dict and semester in subjects_dict[department]:
-        return subjects_dict[department][semester]
-    else:
-        return []
-
-
-
-
-
-
-
-
-
-
-
-
+    return subjects_dict.get(department, {}).get(semester, [])
