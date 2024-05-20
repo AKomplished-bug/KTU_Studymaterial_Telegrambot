@@ -13,7 +13,7 @@ def subject_keyboard(department, semester):
     return subject_keyboard
 
 
-def load_subjects(department, semester):
+def load_subject(department, semester):
     """
     This function loads the list of subjects for the given department and semester.
     """
@@ -46,7 +46,3 @@ def load_subjects(department, semester):
 
 
 
-
-
-def load_subject(department, semester):
- pass
