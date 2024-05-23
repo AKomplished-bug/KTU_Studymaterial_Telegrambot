@@ -51,6 +51,13 @@ def list_files_in_folder(folder_id):
     results = drive_service.files().list(q=query).execute()
     return results.get('files', [])
 
+# Custom function to escape Markdown special characters
+def escape_markdown(text):
+    escape_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    for char in escape_chars:
+        text = text.replace(char, f'\\{char}')
+    return text
+
 async def material_handler(message: types.Message, state: FSMContext):
     material_type = message.text
     await state.update_data(material_type=material_type)
@@ -75,6 +82,10 @@ async def material_handler(message: types.Message, state: FSMContext):
         file_id = file['id']
         file_name = file['name']
         file_url = f"https://drive.google.com/uc?export=download&id={file_id}"
-        await message.reply(f"{file_name}\n[Download]({file_url})", parse_mode='Markdown')
+        
+        # Escape file_name to avoid Markdown issues
+        file_name_escaped = escape_markdown(file_name)
+        
+        await message.reply(f"{file_name_escaped}\n[Download]({file_url})", parse_mode='Markdown')
 
     print(f"Material type selected: {material_type} for subject: {subject}, semester: {semester}, department: {department}")
