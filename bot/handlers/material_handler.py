@@ -24,8 +24,8 @@ folder_ids = {
                 'Previous Year Questions': '1lrSRHEUBo_tD6XWSP-sD67VDDHGl-Mux',
             },
             'CGIP': {
-                'Notes': 'YOUR_CGIP_NOTES_FOLDER_ID',
-                'Previous Year Questions': 'YOUR_CGIP_PYQ_FOLDER_ID',
+                'Notes': '13SK_U_Bf4lXh23P7Q-2kEPoa8VCfMRoj',
+                'Previous Year Questions': '17HyhpT0pLA4ZJbEzQiQUP64P0rW21b-U',
             },
             'AAD': {
                 'Notes': 'YOUR_AAD_NOTES_FOLDER_ID',
