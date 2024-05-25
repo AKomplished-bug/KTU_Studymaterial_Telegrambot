@@ -29,3 +29,39 @@ This project is a Telegram bot designed to help BTech students of KTU university
 - A Telegram bot token from BotFather
 - Google Cloud project with Drive API enabled
 - Service account credentials for Google Drive API
+
+
+Installation
+
+    Clone the repository
+
+sh
+
+git clone https://github.com/AKomplished-bug/KTU_Studymaterial_Telegrambot.git
+cd KTU_Studymaterial_Telegrambot
+
+    Create and activate a virtual environment
+
+sh
+
+python -m venv venv
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+
+    Install the dependencies
+
+sh
+
+pip install -r requirements.txt
+
+    Setup environment variables
+
+Create a .env file in the root directory of your project and add your Telegram bot token:
+
+sh
+
+BOT_TOKEN=your_telegram_bot_token
+
+    Google Cloud setup
+
+    Enable the Google Drive API in your Google Cloud project.
+    Create a service account and download the JSON key file. Save it in the root directory of your project with the name service_account.json.
