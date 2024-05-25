@@ -31,7 +31,7 @@ This project is a Telegram bot designed to help BTech students of KTU university
 - Service account credentials for Google Drive API
 
 
-Installation
+### Installation
 
     Clone the repository
 
@@ -52,8 +52,7 @@ source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
 sh
 
 pip install -r requirements.txt
-
-    Setup environment variables
+### Configuration
 
 Create a .env file in the root directory of your project and add your Telegram bot token:
 
